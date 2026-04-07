@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PowerWorld — Minecraft Server</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060810;
+  --surface: #0d1021;
+  --card: #111827;
+  --border: #1f2a45;
+  --accent: #3b82f6;
+  --accent2: #06b6d4;
+  --gold: #f59e0b;
+  --red: #ef4444;
+  --green: #22c55e;
+  --purple: #a855f7;
+  --text: #e2e8f0;
+  --muted: #64748b;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Exo 2', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Stars background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 50% 10%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 90% 40%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 15% 85%, rgba(255,255,255,0.2) 0%, transparent 100%),
+    radial-gradient(1px 1px at 55% 55%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 80% 15%, rgba(255,255,255,0.4) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(6,8,16,0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+
+.nav-logo {
+  font-family: 'Orbitron', monospace;
+  font-weight: 900;
+  font-size: 20px;
+  color: #fff;
+  text-decoration: none;
+  letter-spacing: 2px;
+}
+
+.nav-logo span { color: var(--accent); }
+
+.nav-links {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover { color: var(--text); }
+
+/* HERO */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 100px 20px 60px;
+  overflow: hidden;
+}
+
+.hero-glow {
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 600px;
+  background: radial-gradient(ellipse, rgba(59,130,246,0.15) 0%, rgba(6,182,212,0.08) 40%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-content { position: relative; z-index: 1; }
+
+.hero-badge {
+  display: inline-block;
+  background: rgba(59,130,246,0.12);
+  border: 1px solid rgba(59,130,246,0.3);
+  color: var(--accent2);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  padding: 6px 18px;
+  border-radius: 100px;
+  margin-bottom: 28px;
+  animation: fadeUp 0.6s ease both;
+}
+
+.hero h1 {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(42px, 8vw, 88px);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -2px;
+  margin-bottom: 12px;
+  animation: fadeUp 0.6s 0.1s ease both;
+}
+
+.hero h1 .power { color: #fff; }
+.hero h1 .world {
+  color: transparent;
+  -webkit-text-stroke: 2px var(--accent);
+  text-stroke: 2px var(--accent);
+}
+
+.hero-sub {
+  font-size: 17px;
+  color: var(--muted);
+  font-weight: 300;
+  margin-bottom: 48px;
+  animation: fadeUp 0.6s 0.2s ease both;
+}
+
+/* IP Block */
+.ip-block {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  animation: fadeUp 0.6s 0.3s ease both;
+  box-shadow: 0 0 40px rgba(59,130,246,0.1);
+}
+
+.ip-label {
+  background: rgba(59,130,246,0.15);
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 0 16px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  border-right: 1px solid var(--border);
+}
+
+.ip-value {
+  font-family: 'Orbitron', monospace;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  padding: 0 20px;
+  letter-spacing: 1px;
+}
+
+.ip-copy-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  height: 52px;
+  padding: 0 20px;
+  cursor: pointer;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: background 0.2s;
+}
+
+.ip-copy-btn:hover { background: #2563eb; }
+.ip-copy-btn.copied { background: var(--green); }
+
+.hero-stats {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  animation: fadeUp 0.6s 0.4s ease both;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-num {
+  font-family: 'Orbitron', monospace;
+  font-size: 26px;
+  font-weight: 900;
+  color: #fff;
+  display: block;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* SECTIONS */
+section {
+  padding: 80px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 56px;
+}
+
+.section-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--accent2);
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(24px, 4vw, 38px);
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -1px;
+}
+
+/* DONATES */
+.donates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.donate-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.donate-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--card-accent, var(--accent));
+  border-radius: 14px 14px 0 0;
+}
+
+.donate-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--card-accent, var(--accent));
+  box-shadow: 0 16px 40px rgba(0,0,0,0.4), 0 0 0 1px var(--card-accent, var(--accent));
+}
+
+.donate-icon {
+  font-size: 36px;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.donate-name {
+  font-family: 'Orbitron', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+.donate-desc {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.donate-price {
+  font-family: 'Orbitron', monospace;
+  font-size: 18px;
+  font-weight: 900;
+  margin-bottom: 14px;
+}
+
+.btn-buy {
+  display: inline-block;
+  background: var(--card-accent, var(--accent));
+  color: #fff;
+  border: none;
+  padding: 9px 22px;
+  border-radius: 8px;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  width: 100%;
+}
+
+.btn-buy:hover { opacity: 0.85; }
+
+/* CASES */
+.cases-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.case-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.case-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% -20%, var(--case-glow, rgba(168,85,247,0.1)) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.case-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--case-color, var(--purple));
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 30px var(--case-glow, rgba(168,85,247,0.2));
+}
+
+.case-badge {
+  position: absolute;
+  top: 16px; right: 16px;
+  background: var(--case-color, var(--purple));
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 100px;
+}
+
+.case-icon {
+  font-size: 52px;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.case-count {
+  font-family: 'Orbitron', monospace;
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--case-color, var(--purple));
+  margin-bottom: 4px;
+}
+
+.case-label {
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.case-features {
+  list-style: none;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.case-features li {
+  font-size: 12px;
+  color: var(--muted);
+  padding: 4px 0;
+  padding-left: 18px;
+  position: relative;
+}
+
+.case-features li::before {
+  content: '⚡';
+  position: absolute;
+  left: 0;
+  font-size: 10px;
+}
+
+.case-price {
+  font-family: 'Orbitron', monospace;
+  font-size: 28px;
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 16px;
+}
+
+.case-old-price {
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: line-through;
+  margin-bottom: 4px;
+}
+
+/* MODAL */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-overlay.active {
+  display: flex;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 440px;
+  overflow: hidden;
+  animation: slideUp 0.3s ease;
+}
+
+.modal-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 1px;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.modal-close:hover { color: #fff; }
+
+.modal-body { padding: 28px 24px; }
+
+/* Step 1 */
+.step { display: none; }
+.step.active { display: block; }
+
+.step-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.product-preview {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.product-preview-icon { font-size: 32px; }
+
+.product-preview-name {
+  font-family: 'Orbitron', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.product-preview-price {
+  font-size: 12px;
+  color: var(--accent2);
+  margin-top: 2px;
+}
+
+.nik-input-wrap {
+  margin-bottom: 20px;
+}
+
+.nik-input-wrap label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.nik-input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  color: #fff;
+  font-family: 'Orbitron', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  outline: none;
+  transition: border-color 0.2s;
+  letter-spacing: 1px;
+}
+
+.nik-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+}
+
+.nik-input::placeholder {
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: 0;
+}
+
+.btn-next {
+  width: 100%;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 14px;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-next:hover { background: #2563eb; }
+
+/* Step 2 */
+.order-summary {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.order-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.order-row:last-child { border-bottom: none; }
+
+.order-row .label { color: var(--muted); }
+.order-row .value { color: #fff; font-weight: 600; font-family: 'Orbitron', monospace; font-size: 12px; }
+.order-row .price { color: var(--gold); font-size: 18px; font-weight: 900; }
+
+.payment-hint {
+  background: rgba(245,158,11,0.08);
+  border: 1px solid rgba(245,158,11,0.2);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 12px;
+  color: #d97706;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.payment-hint strong { color: var(--gold); }
+
+.btn-copy-order {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 12px;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-copy-order:hover { border-color: var(--accent); color: var(--accent); }
+.btn-copy-order.copied { border-color: var(--green); color: var(--green); }
+
+.btn-pay {
+  width: 100%;
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 14px;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  text-decoration: none;
+  display: block;
+  text-align: center;
+}
+
+.btn-pay:hover { opacity: 0.9; }
+
+/* FOOTER */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 40px 20px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.footer-logo {
+  font-family: 'Orbitron', monospace;
+  font-size: 18px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.footer-logo span { color: var(--accent); }
+
+.footer-sub {
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 2px;
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* Divider */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin: 0 40px;
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo"><span>Power</span>World</a>
+  <ul class="nav-links">
+    <li><a href="#donates">Донаты</a></li>
+    <li><a href="#cases">Кейсы</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-badge">⚡ Minecraft сервер</div>
+    <h1><span class="power">POWER</span><span class="world">WORLD</span></h1>
+    <p class="hero-sub">Твой сервер — твои правила. Выбирай сторону: герой или злодей?</p>
+
+    <div>
+      <div class="ip-block">
+        <div class="ip-label">IP</div>
+        <div class="ip-value" id="serverIp">mc.powerworld.rustix.su</div>
+        <button class="ip-copy-btn" id="ipCopyBtn" onclick="copyIP()">Скопировать</button>
+      </div>
+    </div>
+
+    <br><br>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-num">1.20</span>
+        <span class="stat-label">Версия</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">24/7</span>
+        <span class="stat-label">Онлайн</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">500+</span>
+        <span class="stat-label">Игроков</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- DONATES -->
+<section id="donates">
+  <div class="section-header">
+    <div class="section-tag">🛒 Магазин</div>
+    <div class="section-title">Привилегии</div>
+  </div>
+  <div class="donates-grid">
+
+    <div class="donate-card" style="--card-accent:#22c55e" onclick="openModal('Helper','🟢','Базовая привилегия с расширенными возможностями','129₽')">
+      <span class="donate-icon">🟢</span>
+      <div class="donate-name">Helper</div>
+      <div class="donate-desc">Базовые привилегии и особый чат-тег</div>
+      <div class="donate-price" style="color:#22c55e">129 ₽</div>
+      <button class="btn-buy" style="background:#22c55e">Купить</button>
+    </div>
+
+    <div class="donate-card" style="--card-accent:#3b82f6" onclick="openModal('Dhelper','🔵','Расширенные привилегии помощника','89₽')">
+      <span class="donate-icon">🔵</span>
+      <div class="donate-name">Dhelper</div>
+      <div class="donate-desc">Расширенные привилегии и доступ к командам</div>
+      <div class="donate-price" style="color:#3b82f6">89 ₽</div>
+      <button class="btn-buy" style="background:#3b82f6">Купить</button>
+    </div>
+
+    <div class="donate-card" style="--card-accent:#f59e0b" onclick="openModal('Moder','⚡','Права модератора и уникальный префикс','200₽')">
+      <span class="donate-icon">⚡</span>
+      <div class="donate-name">Moder</div>
+      <div class="donate-desc">Права модератора и уникальный префикс</div>
+      <div class="donate-price" style="color:#f59e0b">200 ₽</div>
+      <button class="btn-buy" style="background:#f59e0b">Купить</button>
+    </div>
+
+    <div class="donate-card" style="--card-accent:#a855f7" onclick="openModal('Pegas','🦄','Премиум-привилегия с особыми возможностями','21.26₽')">
+      <span class="donate-icon">🦄</span>
+      <div class="donate-name">Pegas</div>
+      <div class="donate-desc">Премиум-привилегия со спецэффектами</div>
+      <div class="donate-price" style="color:#a855f7">21.26 ₽</div>
+      <button class="btn-buy" style="background:#a855f7">Купить</button>
+    </div>
+
+    <div class="donate-card" style="--card-accent:#ef4444" onclick="openModal('God','👑','Высшая привилегия. Абсолютная власть.','44.44₽')">
+      <span class="donate-icon">👑</span>
+      <div class="donate-name">God</div>
+      <div class="donate-desc">Высшая привилегия с максимальными правами</div>
+      <div class="donate-price" style="color:#ef4444">44.44 ₽</div>
+      <button class="btn-buy" style="background:#ef4444">Купить</button>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CASES -->
+<section id="cases">
+  <div class="section-header">
+    <div class="section-tag">🎁 Удача</div>
+    <div class="section-title">Кейсы с Супер-Донатом</div>
+  </div>
+  <div class="cases-grid">
+
+    <div class="case-card" style="--case-color:#22c55e;--case-glow:rgba(34,197,94,0.12)" onclick="openModal('3 Кейса','📦','3 кейса с шансом выиграть супер-донат','2.99₽')">
+      <div class="case-badge">Старт</div>
+      <span class="case-icon">📦</span>
+      <div class="case-count">3</div>
+      <div class="case-label">кейса</div>
+      <ul class="case-features">
+        <li>Шанс выиграть донат</li>
+        <li>Случайные призы</li>
+        <li>Мгновенное открытие</li>
+      </ul>
+      <div class="case-price" style="color:#22c55e">2.99 ₽</div>
+      <button class="btn-buy" style="background:#22c55e">Купить</button>
+    </div>
+
+    <div class="case-card" style="--case-color:#f59e0b;--case-glow:rgba(245,158,11,0.12)" onclick="openModal('10 Кейсов','🎁','10 кейсов с шансом выиграть супер-донат','9.78₽')">
+      <div class="case-badge" style="background:#f59e0b">Выгодно</div>
+      <span class="case-icon">🎁</span>
+      <div class="case-count" style="color:#f59e0b">10</div>
+      <div class="case-label">кейсов</div>
+      <ul class="case-features">
+        <li>Шанс выиграть донат</li>
+        <li>Повышенный шанс</li>
+        <li>Бонусные призы</li>
+      </ul>
+      <div class="case-old-price">9.90 ₽</div>
+      <div class="case-price" style="color:#f59e0b">9.78 ₽</div>
+      <button class="btn-buy" style="background:#f59e0b;color:#000">Купить</button>
+    </div>
+
+    <div class="case-card" style="--case-color:#ef4444;--case-glow:rgba(239,68,68,0.12)" onclick="openModal('25 Кейсов','🔥','25 кейсов — максимальный шанс выиграть!','15.98₽')">
+      <div class="case-badge" style="background:linear-gradient(135deg,#ef4444,#f59e0b)">🔥 Топ</div>
+      <span class="case-icon">🔥</span>
+      <div class="case-count" style="color:#ef4444">25</div>
+      <div class="case-label">кейсов</div>
+      <ul class="case-features">
+        <li>Максимальный шанс</li>
+        <li>Гарантированные призы</li>
+        <li>Эксклюзивные награды</li>
+      </ul>
+      <div class="case-old-price">24.75 ₽</div>
+      <div class="case-price" style="color:#ef4444">15.98 ₽</div>
+      <button class="btn-buy" style="background:linear-gradient(135deg,#ef4444,#f59e0b)">Купить</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo"><span>Power</span>World</div>
+  <div class="footer-sub">mc.powerworld.rustix.su &nbsp;•&nbsp; 2026</div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Оформление заказа</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Step 1: ник -->
+      <div class="step active" id="step1">
+        <div class="product-preview" id="productPreview">
+          <div class="product-preview-icon" id="previewIcon">⚡</div>
+          <div>
+            <div class="product-preview-name" id="previewName">—</div>
+            <div class="product-preview-price" id="previewPrice">—</div>
+          </div>
+        </div>
+        <div class="nik-input-wrap">
+          <label>Ваш ник в Minecraft</label>
+          <input class="nik-input" id="nikInput" type="text" placeholder="Введи свой ник..." maxlength="16" autocomplete="off">
+        </div>
+        <button class="btn-next" onclick="goStep2()">Далее →</button>
+      </div>
+
+      <!-- Step 2: подтверждение -->
+      <div class="step" id="step2">
+        <div class="order-summary">
+          <div class="order-row">
+            <span class="label">Ник</span>
+            <span class="value" id="summaryNik">—</span>
+          </div>
+          <div class="order-row">
+            <span class="label">Товар</span>
+            <span class="value" id="summaryProduct">—</span>
+          </div>
+          <div class="order-row">
+            <span class="label">Сумма</span>
+            <span class="price" id="summaryPrice">—</span>
+          </div>
+        </div>
+
+        <div class="payment-hint">
+          <strong>Как оплатить?</strong><br>
+          Скопируй сообщение для продавца и нажми «Оплатить на FunPay». Вставь скопированный текст продавцу при оплате.
+        </div>
+
+        <button class="btn-copy-order" id="copyOrderBtn" onclick="copyOrder()">
+          <span>📋</span> <span id="copyBtnText">Скопировать сообщение</span>
+        </button>
+
+        <a class="btn-pay" href="https://funpay.com/lots/offer?id=66097461" target="_blank">
+          💳 Оплатить на FunPay
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentProduct = { name: '', icon: '', desc: '', price: '' };
+
+  function openModal(name, icon, desc, price) {
+    currentProduct = { name, icon, desc, price };
+    document.getElementById('modalTitle').textContent = 'Оформление заказа';
+    document.getElementById('previewIcon').textContent = icon;
+    document.getElementById('previewName').textContent = name;
+    document.getElementById('previewPrice').textContent = price;
+    document.getElementById('nikInput').value = '';
+    document.getElementById('step1').classList.add('active');
+    document.getElementById('step2').classList.remove('active');
+    document.getElementById('modalOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  function closeModalOutside(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  }
+
+  function goStep2() {
+    const nik = document.getElementById('nikInput').value.trim();
+    if (!nik) {
+      document.getElementById('nikInput').focus();
+      document.getElementById('nikInput').style.borderColor = '#ef4444';
+      setTimeout(() => { document.getElementById('nikInput').style.borderColor = ''; }, 1500);
+      return;
+    }
+    document.getElementById('summaryNik').textContent = nik;
+    document.getElementById('summaryProduct').textContent = currentProduct.name;
+    document.getElementById('summaryPrice').textContent = currentProduct.price;
+    document.getElementById('copyBtnText').textContent = 'Скопировать сообщение';
+    document.getElementById('copyOrderBtn').classList.remove('copied');
+    document.getElementById('step1').classList.remove('active');
+    document.getElementById('step2').classList.add('active');
+  }
+
+  function copyOrder() {
+    const nik = document.getElementById('summaryNik').textContent;
+    const product = document.getElementById('summaryProduct').textContent;
+    const price = document.getElementById('summaryPrice').textContent;
+    const msg = `Ник: ${nik}\nТовар: ${product}\nСумма: ${price}\nСервер: mc.powerworld.rustix.su`;
+    navigator.clipboard.writeText(msg).then(() => {
+      document.getElementById('copyBtnText').textContent = '✔ Скопировано!';
+      document.getElementById('copyOrderBtn').classList.add('copied');
+      setTimeout(() => {
+        document.getElementById('copyBtnText').textContent = 'Скопировать сообщение';
+        document.getElementById('copyOrderBtn').classList.remove('copied');
+      }, 3000);
+    });
+  }
+
+  function copyIP() {
+    navigator.clipboard.writeText('mc.powerworld.rustix.su').then(() => {
+      const btn = document.getElementById('ipCopyBtn');
+      btn.textContent = '✔ Скопировано!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Скопировать';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+    if (e.key === 'Enter' && document.getElementById('modalOverlay').classList.contains('active')) {
+      if (document.getElementById('step1').classList.contains('active')) goStep2();
+    }
+  });
+</script>
+</body>
+</html>
