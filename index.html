@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PowerTime — Minecraft Server</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --bg: #0e0a0e;
+  --bg2: #13091a;
+  --card: #1a0d1f;
+  --card2: #1f1128;
+  --border: #3a1a3a;
+  --pink: #e91e8c;
+  --pink2: #ff4db8;
+  --pink-dim: rgba(233,30,140,0.15);
+  --pink-glow: rgba(233,30,140,0.25);
+  --text: #f0e6f0;
+  --muted: #9a7fa0;
+  --white: #ffffff;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Montserrat', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* PARTICLES */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(233,30,140,0.06) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(233,30,140,0.04) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  background: rgba(14,10,14,0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px;
+}
+.logo {
+  font-size: 22px; font-weight: 900; letter-spacing: 1px;
+  color: var(--white); text-decoration: none;
+}
+.logo span { color: var(--pink); }
+.nav-right { display: flex; align-items: center; gap: 24px; }
+.nav-link {
+  color: var(--muted); text-decoration: none;
+  font-size: 13px; font-weight: 600; letter-spacing: 1px;
+  text-transform: uppercase; transition: color 0.2s;
+}
+.nav-link:hover { color: var(--pink); }
+
+/* HERO */
+.hero {
+  position: relative; z-index: 1;
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 80px 20px 60px;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(233,30,140,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-line {
+  width: 60px; height: 3px;
+  background: var(--pink);
+  margin: 0 auto 28px;
+  border-radius: 2px;
+}
+.hero-title {
+  font-size: clamp(48px, 10vw, 96px);
+  font-weight: 900; line-height: 1;
+  letter-spacing: -2px;
+  margin-bottom: 16px;
+  color: var(--white);
+}
+.hero-title .pt { color: var(--pink); }
+.hero-sub {
+  font-size: 15px; color: var(--muted);
+  font-weight: 400; margin-bottom: 40px;
+  letter-spacing: 0.5px;
+}
+.ip-wrapper {
+  display: inline-flex; align-items: stretch;
+  border: 1px solid var(--border);
+  border-radius: 6px; overflow: hidden;
+  background: var(--card);
+  box-shadow: 0 0 30px var(--pink-glow);
+  margin-bottom: 0;
+}
+.ip-tag {
+  background: var(--pink); color: #fff;
+  font-size: 11px; font-weight: 800;
+  letter-spacing: 3px; text-transform: uppercase;
+  padding: 0 16px; display: flex; align-items: center;
+}
+.ip-text {
+  font-family: 'Roboto', monospace;
+  font-size: 14px; font-weight: 500;
+  color: var(--white); padding: 0 20px;
+  display: flex; align-items: center; letter-spacing: 0.5px;
+}
+.ip-btn {
+  background: var(--card2); border: none; border-left: 1px solid var(--border);
+  color: var(--muted); cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase;
+  padding: 0 18px; transition: all 0.2s;
+}
+.ip-btn:hover { background: var(--pink-dim); color: var(--pink); }
+.ip-btn.ok { background: rgba(40,180,80,0.2); color: #4ade80; }
+
+/* SHOP SECTION */
+.shop-section {
+  position: relative; z-index: 1;
+  max-width: 900px; margin: 0 auto;
+  padding: 60px 20px;
+}
+
+/* PINK SEPARATOR */
+.sep {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--pink), transparent);
+  margin: 0 20px 0;
+  position: relative; z-index: 1;
+}
+
+/* SHOP CARD (like FunTime) */
+.shop-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+.shop-card-header {
+  background: var(--card2);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 24px;
+  font-size: 13px; font-weight: 700;
+  color: var(--muted); letter-spacing: 2px; text-transform: uppercase;
+}
+
+/* PRODUCT LIST — FunTime style */
+.product-list { list-style: none; }
+.product-item {
+  display: flex; align-items: center;
+  padding: 14px 24px;
+  border-bottom: 1px solid rgba(58,26,58,0.5);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.product-item:last-child { border-bottom: none; }
+.product-item:hover { background: var(--pink-dim); }
+.product-item.active { background: rgba(233,30,140,0.18); border-left: 3px solid var(--pink); }
+.product-icon {
+  width: 36px; height: 36px;
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; margin-right: 16px; flex-shrink: 0;
+  background: rgba(255,255,255,0.05);
+}
+.product-name {
+  flex: 1; font-size: 15px; font-weight: 600; color: var(--white);
+}
+.product-price {
+  font-size: 15px; font-weight: 700; color: var(--pink);
+  white-space: nowrap; margin-left: 12px;
+}
+
+/* DETAIL PANEL */
+.detail-panel {
+  background: var(--card2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 28px 24px;
+  margin-top: 16px;
+  display: none;
+  animation: fadeIn 0.2s ease;
+}
+.detail-panel.show { display: block; }
+.detail-title {
+  font-size: 20px; font-weight: 800; color: var(--white);
+  margin-bottom: 4px;
+}
+.detail-subtitle { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+
+/* DURATION TABS */
+.duration-wrap { margin-bottom: 20px; }
+.duration-label { font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+.duration-tabs { display: flex; gap: 8px; }
+.dur-tab {
+  background: var(--card); border: 1px solid var(--border);
+  color: var(--muted); padding: 8px 20px; border-radius: 4px;
+  font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+}
+.dur-tab:hover { border-color: var(--pink); color: var(--pink); }
+.dur-tab.active { background: var(--pink); border-color: var(--pink); color: #fff; }
+
+/* PRICE DISPLAY */
+.price-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px;
+}
+.price-big { font-size: 32px; font-weight: 900; color: var(--pink); }
+.price-note { font-size: 12px; color: var(--muted); }
+
+/* NIK INPUT */
+.nik-wrap { margin-bottom: 16px; }
+.nik-label { font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; display: block; }
+.nik-input {
+  width: 100%; background: var(--card); border: 1px solid var(--border);
+  border-radius: 6px; padding: 12px 16px; color: var(--white);
+  font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 600;
+  outline: none; transition: border-color 0.2s;
+}
+.nik-input:focus { border-color: var(--pink); }
+.nik-input::placeholder { color: var(--muted); font-weight: 400; }
+.nik-input.err { border-color: #ef4444; }
+
+/* BUY BTN */
+.btn-buy {
+  width: 100%; background: var(--pink);
+  border: none; border-radius: 6px; padding: 14px;
+  color: #fff; font-family: 'Montserrat', sans-serif;
+  font-size: 14px; font-weight: 800; letter-spacing: 2px;
+  text-transform: uppercase; cursor: pointer; transition: opacity 0.2s;
+  margin-bottom: 10px;
+}
+.btn-buy:hover { opacity: 0.85; }
+
+/* COPY + PAY STEP */
+.step2 { display: none; }
+.step2.show { display: block; animation: fadeIn 0.2s; }
+.order-box {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 6px; padding: 16px 20px; margin-bottom: 16px;
+}
+.order-row-d { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(58,26,58,0.5); font-size: 14px; }
+.order-row-d:last-child { border-bottom: none; }
+.order-row-d .k { color: var(--muted); }
+.order-row-d .v { color: var(--white); font-weight: 700; }
+.order-row-d .vp { color: var(--pink); font-weight: 800; font-size: 16px; }
+.hint-box {
+  background: rgba(233,30,140,0.07); border: 1px solid rgba(233,30,140,0.25);
+  border-radius: 6px; padding: 12px 16px;
+  font-size: 12px; color: #c084a0; line-height: 1.6; margin-bottom: 14px;
+}
+.hint-box b { color: var(--pink); }
+.btn-copy {
+  width: 100%; background: var(--card2); border: 1px solid var(--border);
+  border-radius: 6px; padding: 12px; color: var(--text);
+  font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700;
+  letter-spacing: 1px; cursor: pointer; transition: all 0.2s;
+  margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-copy:hover { border-color: var(--pink); color: var(--pink); }
+.btn-copy.ok { border-color: #4ade80; color: #4ade80; }
+.btn-funpay {
+  width: 100%; background: linear-gradient(135deg, var(--pink), #c2185b);
+  border: none; border-radius: 6px; padding: 14px;
+  color: #fff; font-family: 'Montserrat', sans-serif;
+  font-size: 14px; font-weight: 800; letter-spacing: 2px;
+  text-transform: uppercase; cursor: pointer; text-decoration: none;
+  display: block; text-align: center; transition: opacity 0.2s;
+}
+.btn-funpay:hover { opacity: 0.85; }
+.btn-back { background: none; border: none; color: var(--muted); font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; margin-top: 12px; display: block; transition: color 0.2s; }
+.btn-back:hover { color: var(--text); }
+
+/* SECTION TITLE */
+.sec-title {
+  font-size: 13px; font-weight: 700; color: var(--muted);
+  letter-spacing: 3px; text-transform: uppercase;
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.sec-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* FOOTER */
+footer {
+  position: relative; z-index: 1;
+  background: var(--card); border-top: 1px solid var(--border);
+  padding: 32px 20px; text-align: center;
+}
+.footer-logo { font-size: 18px; font-weight: 900; color: var(--white); margin-bottom: 8px; }
+.footer-logo span { color: var(--pink); }
+.footer-note { font-size: 12px; color: var(--muted); line-height: 1.6; max-width: 500px; margin: 0 auto; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+.hero-title { animation: fadeUp 0.5s ease both; }
+.hero-sub { animation: fadeUp 0.5s 0.1s ease both; }
+.ip-wrapper { animation: fadeUp 0.5s 0.2s ease both; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+@media (max-width: 600px) {
+  nav { padding: 0 16px; }
+  .shop-section { padding: 40px 12px; }
+  .product-item { padding: 12px 16px; }
+  .detail-panel { padding: 20px 16px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="logo"><span>Power</span>Time</a>
+  <div class="nav-right">
+    <a href="#privs" class="nav-link">Привилегии</a>
+    <a href="#cases" class="nav-link">Кейсы</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-line"></div>
+  <h1 class="hero-title">POWER<span class="pt">TIME</span></h1>
+  <p class="hero-sub">Лучший Minecraft сервер — купи привилегию и играй!</p>
+  <div class="ip-wrapper">
+    <div class="ip-tag">IP</div>
+    <div class="ip-text">me.powertime.rustix.cc</div>
+    <button class="ip-btn" id="ipBtn" onclick="copyIP()">Копировать</button>
+  </div>
+</div>
+
+<div class="sep"></div>
+
+<!-- SHOP -->
+<div class="shop-section">
+
+  <!-- PRIVILEGES -->
+  <div id="privs" class="sec-title">Привилегии</div>
+
+  <div class="shop-card">
+    <div class="shop-card-header">Выберите товар:</div>
+    <ul class="product-list" id="privList">
+      <li class="product-item" onclick="selectProduct('Барон','👑','priv',9)"><div class="product-icon">👑</div><div class="product-name">Барон</div><div class="product-price">от 9 РУБ</div></li>
+      <li class="product-item" onclick="selectProduct('Страж','🛡️','priv',15)"><div class="product-icon">🛡️</div><div class="product-name">Страж</div><div class="product-price">от 15 РУБ</div></li>
+      <li class="product-item" onclick="selectProduct('Герой','⚔️','priv',25)"><div class="product-icon">⚔️</div><div class="product-name">Герой</div><div class="product-price">от 25 РУБ</div></li>
+      <li class="product-item" onclick="selectProduct('Аспид','🐍','priv',39)"><div class="product-icon">🐍</div><div class="product-name">Аспид</div><div class="product-price">от 39 РУБ</div></li>
+      <li class="product-item" onclick="selectProduct('Сквид','🦑','priv',49)"><div class="product-icon">🦑</div><div class="product-name">Сквид</div><div class="product-price">от 49 РУБ</div></li>
+      <li class="product-item" onclick="selectProduct('Глава','🎖️','priv',69)"><div class="product-icon">🎖️</div><div class="product-name">Глава</div><div class="product-price">от 69 РУБ</div></li>
+      <li class="product-item" onclick="selectProduct('Элита','💜','priv',99)"><div class="product-icon">💜</div><div class="product-name">Элита</div><div class="product-price">от 99 РУБ</div></li>
+      <li class="product-item" onclick="selectProduct('Титан','🔥','priv',129)"><div class="product-icon">🔥</div><div class="product-name">Титан</div><div class="product-price">от 129 РУБ</div></li>
+      <li class="product-item" onclick="selectProduct('Принц','👸','priv',149)"><div class="product-icon">👸</div><div class="product-name">Принц</div><div class="product-price">от 149 РУБ</div></li>
+      <li class="product-item" onclick="selectProduct('Князь','🔵','priv',169)"><div class="product-icon">🔵</div><div class="product-name">Князь</div><div class="product-price">от 169 РУБ</div></li>
+      <li class="product-item" onclick="selectProduct('Герцог','💎','priv',199)"><div class="product-icon">💎</div><div class="product-name">Герцог</div><div class="product-price">от 199 РУБ</div></li>
+      <li class="product-item" onclick="selectProduct('Геракл','⚡','priv',249)"><div class="product-icon">⚡</div><div class="product-name">Геракл</div><div class="product-price">от 249 РУБ</div></li>
+      <li class="product-item" onclick="selectProduct('Каратель','🗡️','priv',269)"><div class="product-icon">🗡️</div><div class="product-name">Каратель</div><div class="product-price">от 269 РУБ</div></li>
+    </ul>
+  </div>
+
+  <!-- DETAIL PANEL PRIVS -->
+  <div class="detail-panel" id="detailPriv">
+    <div class="detail-title" id="dp-name">—</div>
+    <div class="detail-subtitle">Привилегия сервера PowerTime</div>
+    <div class="duration-wrap">
+      <div class="duration-label">Выберите срок:</div>
+      <div class="duration-tabs">
+        <button class="dur-tab active" onclick="setDur(this,1,'priv')">30 дней</button>
+        <button class="dur-tab" onclick="setDur(this,2,'priv')">90 дней</button>
+        <button class="dur-tab" onclick="setDur(this,3,'priv')">Навсегда</button>
+      </div>
+    </div>
+    <div class="price-row">
+      <div>
+        <div style="font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px">Стоимость:</div>
+        <div class="price-big" id="dp-price">—</div>
+      </div>
+      <div class="price-note" style="text-align:right">Активация после<br>оплаты на FunPay</div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div id="priv-step1">
+      <div class="nik-wrap">
+        <label class="nik-label">Ваш ник в Minecraft</label>
+        <input class="nik-input" id="priv-nik" type="text" placeholder="Введи ник..." maxlength="16">
+      </div>
+      <button class="btn-buy" onclick="goStep2('priv')">ПРИОБРЕСТИ</button>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step2" id="priv-step2">
+      <div class="order-box">
+        <div class="order-row-d"><span class="k">Ник</span><span class="v" id="ps-nik">—</span></div>
+        <div class="order-row-d"><span class="k">Товар</span><span class="v" id="ps-prod">—</span></div>
+        <div class="order-row-d"><span class="k">Срок</span><span class="v" id="ps-dur">—</span></div>
+        <div class="order-row-d"><span class="k">Сумма</span><span class="vp" id="ps-price">—</span></div>
+      </div>
+      <div class="hint-box"><b>Как оплатить:</b> скопируй заказ кнопкой ниже, перейди на FunPay и отправь скопированный текст продавцу в сообщении.</div>
+      <button class="btn-copy" id="priv-copy-btn" onclick="copyOrder('priv')">📋 Скопировать заказ</button>
+      <a class="btn-funpay" href="https://funpay.com/users/9683311/" target="_blank">💳 ОПЛАТИТЬ НА FUNPAY</a>
+      <button class="btn-back" onclick="backStep('priv')">← Назад</button>
+    </div>
+  </div>
+
+  <!-- CASES -->
+  <div id="cases" class="sec-title" style="margin-top:48px">Кейсы</div>
+
+  <div class="shop-card">
+    <div class="shop-card-header">Выберите товар:</div>
+    <ul class="product-list" id="caseList">
+      <li class="product-item" onclick="selectProduct('Кейс с привилегией','🎁','case',19)"><div class="product-icon">🎁</div><div class="product-name">Кейс с привилегией</div><div class="product-price">19 РУБ</div></li>
+      <li class="product-item" onclick="selectProduct('Токен кейс','🟢','case',39)"><div class="product-icon">🟢</div><div class="product-name">Токен кейс</div><div class="product-price">39 РУБ</div></li>
+      <li class="product-item" onclick="selectProduct('Супер Донат Кейс','💥','case',144)"><div class="product-icon">💥</div><div class="product-name">Супер Донат Кейс</div><div class="product-price">144 РУБ</div></li>
+    </ul>
+  </div>
+
+  <!-- DETAIL PANEL CASES -->
+  <div class="detail-panel" id="detailCase">
+    <div class="detail-title" id="dc-name">—</div>
+    <div class="detail-subtitle">Кейс сервера PowerTime</div>
+    <div class="price-row">
+      <div>
+        <div style="font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px">Стоимость:</div>
+        <div class="price-big" id="dc-price">—</div>
+      </div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div id="case-step1">
+      <div class="nik-wrap">
+        <label class="nik-label">Ваш ник в Minecraft</label>
+        <input class="nik-input" id="case-nik" type="text" placeholder="Введи ник..." maxlength="16">
+      </div>
+      <button class="btn-buy" onclick="goStep2('case')">ПРИОБРЕСТИ</button>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step2" id="case-step2">
+      <div class="order-box">
+        <div class="order-row-d"><span class="k">Ник</span><span class="v" id="cs-nik">—</span></div>
+        <div class="order-row-d"><span class="k">Товар</span><span class="v" id="cs-prod">—</span></div>
+        <div class="order-row-d"><span class="k">Сумма</span><span class="vp" id="cs-price">—</span></div>
+      </div>
+      <div class="hint-box"><b>Как оплатить:</b> скопируй заказ кнопкой ниже, перейди на FunPay и отправь скопированный текст продавцу в сообщении.</div>
+      <button class="btn-copy" id="case-copy-btn" onclick="copyOrder('case')">📋 Скопировать заказ</button>
+      <a class="btn-funpay" href="https://funpay.com/users/9683311/" target="_blank">💳 ОПЛАТИТЬ НА FUNPAY</a>
+      <button class="btn-back" onclick="backStep('case')">← Назад</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="sep"></div>
+
+<footer>
+  <div class="footer-logo"><span>Power</span>Time</div>
+  <div class="footer-note" style="margin-top:10px">
+    Сервер PowerTime никак не относится к Mojang, AB.<br>
+    © 2026 PowerTime. Все Права Защищены.
+  </div>
+</footer>
+
+<script>
+const state = {
+  priv: { name: '', icon: '', basePrice: 0, mult: 1, durLabel: '30 дней' },
+  case: { name: '', icon: '', basePrice: 0 }
+};
+
+const DUR_MULT = { 1: 1, 2: 2.5, 3: 4 };
+const DUR_LABEL = { 1: '30 дней', 2: '90 дней', 3: 'Навсегда' };
+
+function calcPrice(base, mult) {
+  return Math.round(base * mult);
+}
+
+function selectProduct(name, icon, type, price) {
+  if (type === 'priv') {
+    // deselect all
+    document.querySelectorAll('#privList .product-item').forEach(el => el.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+
+    state.priv.name = name;
+    state.priv.icon = icon;
+    state.priv.basePrice = price;
+    const panel = document.getElementById('detailPriv');
+    panel.classList.add('show');
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    document.getElementById('dp-name').textContent = icon + ' ' + name;
+    updatePrivPrice();
+    // reset to step1
+    document.getElementById('priv-step1').style.display = 'block';
+    document.getElementById('priv-step2').classList.remove('show');
+    document.getElementById('priv-nik').value = '';
+    document.getElementById('priv-nik').classList.remove('err');
+  } else {
+    document.querySelectorAll('#caseList .product-item').forEach(el => el.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+
+    state.case.name = name;
+    state.case.icon = icon;
+    state.case.basePrice = price;
+    const panel = document.getElementById('detailCase');
+    panel.classList.add('show');
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    document.getElementById('dc-name').textContent = icon + ' ' + name;
+    document.getElementById('dc-price').textContent = price + ' ₽';
+    // reset
+    document.getElementById('case-step1').style.display = 'block';
+    document.getElementById('case-step2').classList.remove('show');
+    document.getElementById('case-nik').value = '';
+    document.getElementById('case-nik').classList.remove('err');
+  }
+}
+
+function updatePrivPrice() {
+  const p = calcPrice(state.priv.basePrice, state.priv.mult);
+  document.getElementById('dp-price').textContent = p + ' ₽';
+}
+
+function setDur(btn, key, type) {
+  document.querySelectorAll('.dur-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  state.priv.mult = DUR_MULT[key];
+  state.priv.durLabel = DUR_LABEL[key];
+  updatePrivPrice();
+}
+
+function goStep2(type) {
+  const nikEl = document.getElementById(type + '-nik');
+  const nik = nikEl.value.trim();
+  if (!nik) { nikEl.classList.add('err'); nikEl.focus(); setTimeout(() => nikEl.classList.remove('err'), 1500); return; }
+
+  if (type === 'priv') {
+    const price = calcPrice(state.priv.basePrice, state.priv.mult);
+    document.getElementById('ps-nik').textContent = nik;
+    document.getElementById('ps-prod').textContent = state.priv.name;
+    document.getElementById('ps-dur').textContent = state.priv.durLabel;
+    document.getElementById('ps-price').textContent = price + ' ₽';
+    document.getElementById('priv-step1').style.display = 'none';
+    document.getElementById('priv-step2').classList.add('show');
+    document.getElementById('priv-copy-btn').textContent = '📋 Скопировать заказ';
+    document.getElementById('priv-copy-btn').classList.remove('ok');
+  } else {
+    document.getElementById('cs-nik').textContent = nik;
+    document.getElementById('cs-prod').textContent = state.case.name;
+    document.getElementById('cs-price').textContent = state.case.basePrice + ' ₽';
+    document.getElementById('case-step1').style.display = 'none';
+    document.getElementById('case-step2').classList.add('show');
+    document.getElementById('case-copy-btn').textContent = '📋 Скопировать заказ';
+    document.getElementById('case-copy-btn').classList.remove('ok');
+  }
+}
+
+function backStep(type) {
+  document.getElementById(type + '-step1').style.display = 'block';
+  document.getElementById(type + '-step2').classList.remove('show');
+}
+
+function copyOrder(type) {
+  let msg, btnId;
+  if (type === 'priv') {
+    const nik = document.getElementById('ps-nik').textContent;
+    const prod = document.getElementById('ps-prod').textContent;
+    const dur = document.getElementById('ps-dur').textContent;
+    const price = document.getElementById('ps-price').textContent;
+    msg = `Ник: ${nik}\nТовар: ${prod}\nСрок: ${dur}\nСумма: ${price}\nСервер: me.powertime.rustix.cc`;
+    btnId = 'priv-copy-btn';
+  } else {
+    const nik = document.getElementById('cs-nik').textContent;
+    const prod = document.getElementById('cs-prod').textContent;
+    const price = document.getElementById('cs-price').textContent;
+    msg = `Ник: ${nik}\nТовар: ${prod}\nСумма: ${price}\nСервер: me.powertime.rustix.cc`;
+    btnId = 'case-copy-btn';
+  }
+  navigator.clipboard.writeText(msg).then(() => {
+    const btn = document.getElementById(btnId);
+    btn.textContent = '✔ Скопировано!';
+    btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = '📋 Скопировать заказ'; btn.classList.remove('ok'); }, 3000);
+  });
+}
+
+function copyIP() {
+  navigator.clipboard.writeText('me.powertime.rustix.cc').then(() => {
+    const btn = document.getElementById('ipBtn');
+    btn.textContent = '✔ Скопировано!';
+    btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = 'Копировать'; btn.classList.remove('ok'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>
